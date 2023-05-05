@@ -1,0 +1,24 @@
+{
+  "name": "move-the-bot",
+  "version": "1.0.0",
+  "description": "Move the Robot",
+  "scripts": {
+    "test": "vitest run",
+    "lint": "rome check ./**/*.ts",
+    "lint:fix": "rome check --apply ./**/*.ts",
+    "lint:fix:unsafe": "rome check --apply-unsafe ./**/*.ts",
+    "format": "rome format --write ./**/*.ts",
+    "ci": "rome ci ./**/*.ts"
+  },
+  "author": "Sam Huynh <samhwang2112.dev@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.16.5",
+    "@vitest/coverage-c8": "^0.31.0",
+    "esbuild": "^0.17.18",
+    "rome": "^12.0.0",
+    "tsx": "^3.12.7",
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.0"
+  }
+}
