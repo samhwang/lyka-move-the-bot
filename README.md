@@ -20,6 +20,14 @@ pnpm run test  # Run unit tests
 pnpm run start # Run the script
 ```
 
+## Running the script
+
+- Open the `bin/move.ts` file.
+- There are a few places to edit the input. This will be marked with the `@TODO`:
+  - `ROBOT_POSITION`: Starting position of the robot in the warehouse
+  - `COMMAND`: The command to feed into the robot
+- After editing, run the script with `pnpm run start`.
+
 ## The Grid
 
 Assuming the grid is a 10x10 square grid like this
@@ -37,8 +45,9 @@ Assuming the grid is a 10x10 square grid like this
 
 ## Assumptions
 
-- The starting location is always within the grid ([0-9, 0-9]).
-- The command lines are always valid for each test case. (i.e. part 1 commands only has N W E S).
+- There is only 1 robot in the whole factory.
+- The starting and finishing location is always within the grid ([0-9, 0-9]).
+- The command lines being fed into the robot are always valid for each test case. (i.e. part 1 commands only has N W E S).
 
 ## Part 1
 

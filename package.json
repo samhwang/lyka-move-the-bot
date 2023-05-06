@@ -8,7 +8,8 @@
     "lint:fix": "rome check --apply ./**/*.ts",
     "lint:fix:unsafe": "rome check --apply-unsafe ./**/*.ts",
     "format": "rome format --write ./**/*.ts",
-    "ci": "rome ci ./**/*.ts"
+    "ci": "rome ci ./**/*.ts",
+    "start": "tsx bin/move.ts"
   },
   "author": "Sam Huynh <samhwang2112.dev@gmail.com>",
   "license": "ISC",
