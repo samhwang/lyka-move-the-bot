@@ -1,5 +1,5 @@
 const VALID_COMMANDS = ['N', 'S', 'E', 'W'] as const;
-type Command = typeof VALID_COMMANDS[number];
+type Command = (typeof VALID_COMMANDS)[number];
 
 type Row = number;
 type Column = number;
