@@ -4,8 +4,8 @@ Lyka move the robot assessment.
 
 ## Requirements
 
-- Node 18
-- PNPM v8
+- Node 20
+- PNPM v9
 
 ## Setup
 
@@ -31,7 +31,9 @@ pnpm run start # Run the script
 ## The Grid
 
 Assuming the grid is a 10x10 square grid like this
-   0 1 2 3 4 5 6 7 8 9
+
+```txt
+S  0 1 2 3 4 5 6 7 8 9
 9 | | | | | | | | | | |
 8 | | | | | | | | | | |
 7 | | | | | | | | | | |
@@ -42,6 +44,7 @@ Assuming the grid is a 10x10 square grid like this
 2 | | | | | | | | | | |
 1 | | | | | | | | | | |
 0 | | | | | | | | | | |
+```
 
 ## Assumptions
 
