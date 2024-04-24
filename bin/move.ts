@@ -1,9 +1,9 @@
-import { Coordinates, InitialFactoryState, execute } from '../src';
+import { type Coordinates, type FactoryState, execute } from '../src';
 
 // @TODO: Edit this with the starting position of the Robot.
 const COMMAND = '';
 const ROBOT_POSITION: Coordinates = [0, 0];
-const GRID_STATS: InitialFactoryState = {
+const GRID_STATS: FactoryState = {
   robotPosition: ROBOT_POSITION,
 };
 

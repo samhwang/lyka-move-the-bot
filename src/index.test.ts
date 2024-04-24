@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { execute, Coordinates } from './index';
+import { describe, expect, it } from 'vitest';
+import { type Coordinates, execute } from './index';
 
 describe('Move Robot Tests', () => {
   describe('Part 1', () => {

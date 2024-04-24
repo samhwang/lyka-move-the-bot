@@ -5,7 +5,7 @@ type Row = number;
 type Column = number;
 export type Coordinates = [Row, Column];
 
-export interface InitialFactoryState {
+export type FactoryState = {
   robotPosition: Coordinates;
 }
 
@@ -34,16 +34,16 @@ function moveRobot(currentPosition: Coordinates, command: Command) {
   return isOutOfBounds(newLocation) ? currentPosition : newLocation;
 }
 
-export function execute(initialState: InitialFactoryState, command: string): InitialFactoryState {
+export function execute(initialState: FactoryState, command: string): FactoryState {
   if (command.length === 0) {
     return initialState;
   }
 
   const steps = command.split(' ') as Command[];
   let currentRobotPosition = initialState.robotPosition;
-  steps.forEach((step) => {
+  for (const step of steps) {
     currentRobotPosition = moveRobot(currentRobotPosition, step);
-  });
+  }
 
   return {
     robotPosition: currentRobotPosition,
