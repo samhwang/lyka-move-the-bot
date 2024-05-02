@@ -66,6 +66,25 @@ function grabCrate(hasCrate: boolean, robotPosition: Coordinates, crates: Crate[
   return { hasCrate: true, crates };
 }
 
+function filterCrateAtRobotPosition(currentPosition: Coordinates, crates: Crate[]): Crate[] {
+  return crates.filter((crate) => JSON.stringify(crate.position) === JSON.stringify(currentPosition));
+}
+
+function dropCrate(hasCrate: boolean, robotPosition: Coordinates, crates: Crate[]): { hasCrate: boolean; crates: Crate[] } {
+  if (!hasCrate) {
+    console.error('NO CRATE TO DROP.');
+    return { hasCrate, crates };
+  }
+
+  const cratesAtPosition = filterCrateAtRobotPosition(robotPosition, crates);
+  if (cratesAtPosition.length >= 2) {
+    console.error('CANNOT DROP CRATE ON TOP OF ANOTHER CRATE.');
+    return { hasCrate, crates };
+  }
+
+  return { hasCrate: false, crates };
+}
+
 export function execute(initialState: FactoryState, command: string): FactoryState {
   if (command.length === 0) {
     return initialState;
@@ -83,6 +102,9 @@ export function execute(initialState: FactoryState, command: string): FactorySta
       continue;
     }
     if (step === 'D') {
+      const result = dropCrate(hasCrate, currentRobotPosition, crates);
+      hasCrate = result.hasCrate;
+      crates = result.crates;
       continue;
     }
 

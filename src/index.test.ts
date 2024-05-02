@@ -1,9 +1,13 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { type Coordinates, type FactoryState, execute } from './index';
 
 const consoleErrorSpy = vi.spyOn(console, 'error');
 
 describe('Move Robot Tests', () => {
+  beforeEach(() => {
+    consoleErrorSpy.mockReset();
+  });
+
   describe('Just the robot', () => {
     it('Should stay still if the command is empty', () => {
       const original: FactoryState = {
@@ -148,6 +152,24 @@ describe('Move Robot Tests', () => {
       expect(consoleErrorSpy).toBeCalledWith('NO CRATE TO GRAB.');
     });
 
-    it('should not drop a crate on top of another crate', () => {});
+    it('should not drop a crate on top of another crate', () => {
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: true,
+        },
+        crates: [{ position: [0, 0] }, { position: [0, 1] }],
+      };
+      const newLocation = execute(original, 'E D');
+      const expected: FactoryState = {
+        robot: {
+          position: [0, 1],
+          hasCrate: true,
+        },
+        crates: [{ position: [0, 1] }, { position: [0, 1] }],
+      };
+      expect(newLocation).toEqual(expected);
+      expect(consoleErrorSpy).toBeCalledWith('CANNOT DROP CRATE ON TOP OF ANOTHER CRATE.');
+    });
   });
 });
