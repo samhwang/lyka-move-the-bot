@@ -1,4 +1,4 @@
-import { type Coordinates, type FactoryState, execute } from '../src';
+import { type Coordinates, type FactoryState, drawGrid, execute } from '../src';
 
 // @TODO: Edit this with the starting position of the Robot.
 const COMMAND = 'N E N E N E N E G';
@@ -16,9 +16,13 @@ function moveTheRobot() {
   const finish = execute(GRID_STATS, COMMAND);
 
   console.log('STARTING POSITION: ', JSON.stringify(GRID_STATS));
+  const startGrid = drawGrid(GRID_STATS);
+  console.log(startGrid);
   console.log('COMMAND: ', COMMAND);
   console.log('FINISHED MOVING.');
   console.log('GRID STATE: ', JSON.stringify(finish));
+  const finishGrid = drawGrid(finish);
+  console.log(finishGrid);
 }
 
 moveTheRobot();
