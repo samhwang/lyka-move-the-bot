@@ -41,7 +41,7 @@ function isOutOfBounds([row, col]: Coordinates) {
   return outOfNorthSouth || outOfEastWest;
 }
 
-function moveRobot(currentPosition: Coordinates, command: Command) {
+export function moveRobot(currentPosition: Coordinates, command: Command) {
   const [currentRow, currentColumn] = currentPosition;
   const [stepRow, stepColumn] = ROBOT_STEP[command];
   const newLocation = [currentRow + stepRow, currentColumn + stepColumn] satisfies Coordinates;

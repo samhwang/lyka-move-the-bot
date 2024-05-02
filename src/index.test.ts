@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { type Coordinates, type FactoryState, execute } from './index';
+import { type Coordinates, type FactoryState, execute, moveRobot } from './index';
 
 const consoleErrorSpy = vi.spyOn(console, 'error');
+
+const moveRobotMock = vi.mocked(moveRobot);
 
 describe('Move Robot Tests', () => {
   beforeEach(() => {
@@ -170,6 +172,28 @@ describe('Move Robot Tests', () => {
       };
       expect(newLocation).toEqual(expected);
       expect(consoleErrorSpy).toBeCalledWith('CANNOT DROP CRATE ON TOP OF ANOTHER CRATE.');
+    });
+  });
+
+  describe('Diagonal tracks', () => {
+    it('Should be able to group diagonal moves', () => {
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      const newLocation = execute(original, 'N E');
+      const expected: FactoryState = {
+        robot: {
+          position: [1, 1],
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      expect(newLocation).toEqual(expected);
+      expect(moveRobotMock).toBeCalledTimes(1);
     });
   });
 });
