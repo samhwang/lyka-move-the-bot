@@ -7,7 +7,7 @@ export type Coordinates = [Row, Column];
 
 export type FactoryState = {
   robotPosition: Coordinates;
-}
+};
 
 const ROBOT_STEP: Record<Command, Coordinates> = {
   N: [1, 0],
