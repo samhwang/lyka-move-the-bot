@@ -6,7 +6,9 @@ type Column = number;
 export type Coordinates = [Row, Column];
 
 export type FactoryState = {
-  robotPosition: Coordinates;
+  robot: {
+    position: Coordinates;
+  };
 };
 
 const ROBOT_STEP: Record<Command, Coordinates> = {
@@ -40,12 +42,14 @@ export function execute(initialState: FactoryState, command: string): FactorySta
   }
 
   const steps = command.split(' ') as Command[];
-  let currentRobotPosition = initialState.robotPosition;
+  let currentRobotPosition = initialState.robot.position;
   for (const step of steps) {
     currentRobotPosition = moveRobot(currentRobotPosition, step);
   }
 
   return {
-    robotPosition: currentRobotPosition,
+    robot: {
+      position: currentRobotPosition,
+    },
   };
 }
