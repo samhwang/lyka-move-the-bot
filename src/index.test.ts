@@ -9,6 +9,12 @@ describe('Move Robot Tests', () => {
       expect(newLocation).toEqual({ robot: { position: start } });
     });
 
+    it('Should stay still if given crate commands', () => {
+      const start: Coordinates = [0, 0];
+      const newLocation = execute({ robot: { position: start } }, 'G D');
+      expect(newLocation).toEqual({ robot: { position: start } });
+    });
+
     it.each<[string, Coordinates]>([
       ['N', [9, 0]],
       ['S', [0, 0]],

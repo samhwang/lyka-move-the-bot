@@ -1,4 +1,6 @@
-const VALID_COMMANDS = ['N', 'S', 'E', 'W'] as const;
+const MOVE_COMMANDS = ['N', 'S', 'E', 'W'] as const;
+const GRAB_COMMANDS = ['G', 'D'] as const;
+const VALID_COMMANDS = [...MOVE_COMMANDS, ...GRAB_COMMANDS] as const;
 type Command = (typeof VALID_COMMANDS)[number];
 
 type Row = number;
@@ -16,6 +18,8 @@ const ROBOT_STEP: Record<Command, Coordinates> = {
   S: [-1, 0],
   E: [0, 1],
   W: [0, -1],
+  D: [0, 0],
+  G: [0, 0],
 };
 
 // since the size is 10x10, the max of each line should go from 0 to 9.
