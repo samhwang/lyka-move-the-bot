@@ -1,18 +1,30 @@
 import { describe, expect, it } from 'vitest';
-import { type Coordinates, execute } from './index';
+import { type Coordinates, type FactoryState, execute } from './index';
 
 describe('Move Robot Tests', () => {
   describe('Just the robot', () => {
     it('Should stay still if the command is empty', () => {
-      const start: Coordinates = [0, 0];
-      const newLocation = execute({ robot: { position: start } }, '');
-      expect(newLocation).toEqual({ robot: { position: start } });
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      const newLocation: FactoryState = execute(original, '');
+      expect(newLocation).toEqual(original);
     });
 
     it('Should stay still if given crate commands', () => {
-      const start: Coordinates = [0, 0];
-      const newLocation = execute({ robot: { position: start } }, 'G D');
-      expect(newLocation).toEqual({ robot: { position: start } });
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      const newLocation = execute(original, 'G D');
+      expect(newLocation).toEqual(original);
     });
 
     it.each<[string, Coordinates]>([
@@ -21,8 +33,15 @@ describe('Move Robot Tests', () => {
       ['W', [0, 0]],
       ['E', [0, 9]],
     ])('should not move if it will hit the wall', (command, start) => {
-      const newLocation = execute({ robot: { position: start } }, command);
-      expect(newLocation).toEqual({ robot: { position: start } });
+      const original: FactoryState = {
+        robot: {
+          position: start,
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      const newLocation = execute(original, command);
+      expect(newLocation).toEqual(original);
     });
 
     it.each<[string, string, Coordinates]>([
@@ -32,8 +51,22 @@ describe('Move Robot Tests', () => {
       ['East', 'E', [5, 6]],
     ])('should move 1 step %s when given %s command', (_direction, command, end) => {
       const start: Coordinates = [5, 5];
-      const newLocation = execute({ robot: { position: start } }, command);
-      expect(newLocation).toEqual({ robot: { position: end } });
+      const original: FactoryState = {
+        robot: {
+          position: start,
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      const newLocation = execute(original, command);
+      const expected: FactoryState = {
+        robot: {
+          position: end,
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      expect(newLocation).toEqual(expected);
     });
 
     it.each<[string, Coordinates, Coordinates]>([
@@ -41,8 +74,22 @@ describe('Move Robot Tests', () => {
       ['N E N E N E N E', [0, 0], [4, 4]],
       ['N N N N N N N N N E E E E E E E E E S S S S S S S S S W W W W W W W W', [0, 0], [0, 1]],
     ])('should arrive at the correct destination when given a string of commands', (command, start, end) => {
-      const newLocation = execute({ robot: { position: start } }, command);
-      expect(newLocation).toEqual({ robot: { position: end } });
+      const original: FactoryState = {
+        robot: {
+          position: start,
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      const newLocation = execute(original, command);
+      const expected: FactoryState = {
+        robot: {
+          position: end,
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      expect(newLocation).toEqual(expected);
     });
   });
 });

@@ -4,7 +4,11 @@ import { type Coordinates, type FactoryState, execute } from '../src';
 const COMMAND = '';
 const ROBOT_POSITION: Coordinates = [0, 0];
 const GRID_STATS: FactoryState = {
-  robotPosition: ROBOT_POSITION,
+  robot: {
+    position: ROBOT_POSITION,
+    hasCrate: false,
+  },
+  crates: [],
 };
 
 function moveTheRobot() {
@@ -13,7 +17,7 @@ function moveTheRobot() {
 
   console.log('STARTING POSITION: ', ROBOT_POSITION);
   console.log('FINISHED MOVING.');
-  console.log('ROBOT POSITION: ', finish.robotPosition);
+  console.log('GRID STATE: ', finish);
 }
 
 moveTheRobot();

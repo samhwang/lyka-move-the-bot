@@ -7,10 +7,18 @@ type Row = number;
 type Column = number;
 export type Coordinates = [Row, Column];
 
+type Robot = {
+  position: Coordinates;
+  hasCrate: boolean;
+};
+
+type Crate = {
+  position: Coordinates;
+};
+
 export type FactoryState = {
-  robot: {
-    position: Coordinates;
-  };
+  robot: Robot;
+  crates: Crate[];
 };
 
 const ROBOT_STEP: Record<Command, Coordinates> = {
@@ -47,6 +55,8 @@ export function execute(initialState: FactoryState, command: string): FactorySta
 
   const steps = command.split(' ') as Command[];
   let currentRobotPosition = initialState.robot.position;
+  const hasCrate = initialState.robot.hasCrate;
+  const crates = initialState.crates;
   for (const step of steps) {
     currentRobotPosition = moveRobot(currentRobotPosition, step);
   }
@@ -54,6 +64,8 @@ export function execute(initialState: FactoryState, command: string): FactorySta
   return {
     robot: {
       position: currentRobotPosition,
+      hasCrate,
     },
+    crates,
   };
 }
