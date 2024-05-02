@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { type Coordinates, execute } from './index';
 
 describe('Move Robot Tests', () => {
-  describe('Part 1', () => {
+  describe('Just the robot', () => {
     it('Should stay still if the command is empty', () => {
       const start: Coordinates = [0, 0];
       const newLocation = execute({ robot: { position: start } }, '');
