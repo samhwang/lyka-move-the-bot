@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { type Coordinates, type FactoryState, execute } from './index';
+
+const consoleErrorSpy = vi.spyOn(console, 'error');
 
 describe('Move Robot Tests', () => {
   describe('Just the robot', () => {
@@ -91,5 +93,61 @@ describe('Move Robot Tests', () => {
       };
       expect(newLocation).toEqual(expected);
     });
+  });
+
+  describe('With crates', () => {
+    it('should grab crate if it does not have one', () => {
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: false,
+        },
+        crates: [{ position: [0, 0] }],
+      };
+      const newLocation = execute(original, 'G');
+      const expected: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: true,
+        },
+        crates: [{ position: [0, 0] }],
+      };
+      expect(newLocation).toEqual(expected);
+    });
+
+    it('should not grab crate if it already has one', () => {
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: true,
+        },
+        crates: [{ position: [0, 0] }, { position: [1, 0] }],
+      };
+      const newLocation = execute(original, 'N G');
+      const expected: FactoryState = {
+        robot: {
+          position: [1, 0],
+          hasCrate: true,
+        },
+        crates: [{ position: [1, 0] }, { position: [1, 0] }],
+      };
+      expect(newLocation).toEqual(expected);
+      expect(consoleErrorSpy).toBeCalledWith('ALREADY HAVE CRATE, CANNOT GRAB MORE.');
+    });
+
+    it('should not grab crate if there is no crate at the location', () => {
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      const newLocation = execute(original, 'G');
+      expect(newLocation).toEqual(original);
+      expect(consoleErrorSpy).toBeCalledWith('NO CRATE TO GRAB.');
+    });
+
+    it('should not drop a crate on top of another crate', () => {});
   });
 });

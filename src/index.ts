@@ -48,6 +48,24 @@ function moveRobot(currentPosition: Coordinates, command: Command) {
   return isOutOfBounds(newLocation) ? currentPosition : newLocation;
 }
 
+function findCrateAtRobotPosition(currentPosition: Coordinates, crates: Crate[]): Crate | undefined {
+  return crates.find((crate) => JSON.stringify(crate.position) === JSON.stringify(currentPosition));
+}
+
+function grabCrate(hasCrate: boolean, robotPosition: Coordinates, crates: Crate[]): { hasCrate: boolean; crates: Crate[] } {
+  if (hasCrate) {
+    console.error('ALREADY HAVE CRATE, CANNOT GRAB MORE.');
+    return { hasCrate, crates };
+  }
+
+  const crate = findCrateAtRobotPosition(robotPosition, crates);
+  if (!crate) {
+    console.error('NO CRATE TO GRAB.');
+    return { hasCrate, crates };
+  }
+  return { hasCrate: true, crates };
+}
+
 export function execute(initialState: FactoryState, command: string): FactoryState {
   if (command.length === 0) {
     return initialState;
@@ -55,9 +73,24 @@ export function execute(initialState: FactoryState, command: string): FactorySta
 
   const steps = command.split(' ') as Command[];
   let currentRobotPosition = initialState.robot.position;
-  const hasCrate = initialState.robot.hasCrate;
-  const crates = initialState.crates;
+  let hasCrate = initialState.robot.hasCrate;
+  let crates = initialState.crates;
   for (const step of steps) {
+    if (step === 'G') {
+      const result = grabCrate(hasCrate, currentRobotPosition, crates);
+      hasCrate = result.hasCrate;
+      crates = result.crates;
+      continue;
+    }
+    if (step === 'D') {
+      continue;
+    }
+
+    if (hasCrate) {
+      // biome-ignore lint/style/noNonNullAssertion: If robot already has crate, then we certainly have one at the same position.
+      const crate = findCrateAtRobotPosition(currentRobotPosition, crates)!;
+      crate.position = moveRobot(crate.position, step);
+    }
     currentRobotPosition = moveRobot(currentRobotPosition, step);
   }
 
