@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { type Coordinates, type FactoryState, execute, moveRobot } from './index';
+import type { Coordinates, FactoryState } from './factory-state';
+import { execute } from './index';
+import { moveRobot } from './move';
 
 const consoleErrorSpy = vi.spyOn(console, 'error');
 

@@ -1,4 +1,5 @@
-import { type Coordinates, type FactoryState, drawGrid, execute } from '../src';
+import { drawGrid, execute } from '../src';
+import type { Coordinates, FactoryState } from '../src/factory-state';
 
 // @TODO: Edit this with the starting position of the Robot.
 const COMMAND = 'N E N E N E N E G';
