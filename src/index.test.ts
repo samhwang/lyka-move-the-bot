@@ -1,11 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Coordinates, FactoryState } from './factory-state';
 import { execute } from './index';
-import { move } from './move';
 
 const consoleErrorSpy = vi.spyOn(console, 'error');
-
-const moveMock = vi.mocked(move);
 
 describe('Move Robot Tests', () => {
   beforeEach(() => {
@@ -174,28 +171,6 @@ describe('Move Robot Tests', () => {
       };
       expect(newLocation).toEqual(expected);
       expect(consoleErrorSpy).toBeCalledWith('CANNOT DROP CRATE ON TOP OF ANOTHER CRATE.');
-    });
-  });
-
-  describe.skip('Diagonal tracks', () => {
-    it('Should be able to group diagonal moves', () => {
-      const original: FactoryState = {
-        robot: {
-          position: [0, 0],
-          hasCrate: false,
-        },
-        crates: [],
-      };
-      const newLocation = execute(original, 'N E');
-      const expected: FactoryState = {
-        robot: {
-          position: [1, 1],
-          hasCrate: false,
-        },
-        crates: [],
-      };
-      expect(newLocation).toEqual(expected);
-      expect(moveMock).toBeCalledTimes(1);
     });
   });
 });
