@@ -3,44 +3,68 @@ import { dropCrate, findCrateAtRobotPosition, grabCrate } from './crate-interact
 import type { FactoryState } from './factory-state';
 import { MAX, moveRobot } from './move';
 
+function calculateFactoryState(previousState: FactoryState, command: Command): FactoryState {
+  switch (command) {
+    case 'G': {
+      const grabResult = grabCrate(previousState.robot.hasCrate, previousState.robot.position, previousState.crates);
+      return {
+        robot: {
+          position: previousState.robot.position,
+          hasCrate: grabResult.hasCrate,
+        },
+        crates: grabResult.crates,
+      };
+    }
+
+    case 'D': {
+      const dropResult = dropCrate(previousState.robot.hasCrate, previousState.robot.position, previousState.crates);
+      return {
+        robot: {
+          position: previousState.robot.position,
+          hasCrate: dropResult.hasCrate,
+        },
+        crates: dropResult.crates,
+      };
+    }
+
+    case 'N':
+    case 'S':
+    case 'E':
+    case 'W': {
+      let newCrates = previousState.crates;
+      const position = moveRobot(previousState.robot.position, command);
+      if (previousState.robot.hasCrate) {
+        // biome-ignore lint/style/noNonNullAssertion: If robot already has crate, then we certainly have one at the same position.
+        const crate = findCrateAtRobotPosition(previousState.robot.position, previousState.crates)!;
+        newCrates = newCrates.filter((c) => JSON.stringify(c.position) !== JSON.stringify(crate.position)).concat({ position });
+      }
+      return {
+        robot: {
+          position,
+          hasCrate: previousState.robot.hasCrate,
+        },
+        crates: newCrates,
+      };
+    }
+
+    default:
+      console.error('INVALID COMMAND');
+      return previousState;
+  }
+}
+
 export function execute(initialState: FactoryState, instruction: string): FactoryState {
   if (instruction.length === 0) {
     return initialState;
   }
 
   const commands = instruction.split(' ') as Command[];
-  let currentRobotPosition = initialState.robot.position;
-  let hasCrate = initialState.robot.hasCrate;
-  let crates = initialState.crates;
+  let factoryState = initialState;
   for (const command of commands) {
-    if (command === 'G') {
-      const result = grabCrate(hasCrate, currentRobotPosition, crates);
-      hasCrate = result.hasCrate;
-      crates = result.crates;
-      continue;
-    }
-    if (command === 'D') {
-      const result = dropCrate(hasCrate, currentRobotPosition, crates);
-      hasCrate = result.hasCrate;
-      crates = result.crates;
-      continue;
-    }
-
-    if (hasCrate) {
-      // biome-ignore lint/style/noNonNullAssertion: If robot already has crate, then we certainly have one at the same position.
-      const crate = findCrateAtRobotPosition(currentRobotPosition, crates)!;
-      crate.position = moveRobot(crate.position, command);
-    }
-    currentRobotPosition = moveRobot(currentRobotPosition, command);
+    factoryState = calculateFactoryState(factoryState, command);
   }
 
-  return {
-    robot: {
-      position: currentRobotPosition,
-      hasCrate,
-    },
-    crates,
-  };
+  return factoryState;
 }
 
 export function drawGrid(factoryState: FactoryState) {
