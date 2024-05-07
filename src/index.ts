@@ -3,23 +3,23 @@ import { dropCrate, findCrateAtRobotPosition, grabCrate } from './crate-interact
 import type { FactoryState } from './factory-state';
 import { MAX, moveRobot } from './move';
 
-export function execute(initialState: FactoryState, command: string): FactoryState {
-  if (command.length === 0) {
+export function execute(initialState: FactoryState, instruction: string): FactoryState {
+  if (instruction.length === 0) {
     return initialState;
   }
 
-  const steps = command.split(' ') as Command[];
+  const commands = instruction.split(' ') as Command[];
   let currentRobotPosition = initialState.robot.position;
   let hasCrate = initialState.robot.hasCrate;
   let crates = initialState.crates;
-  for (const step of steps) {
-    if (step === 'G') {
+  for (const command of commands) {
+    if (command === 'G') {
       const result = grabCrate(hasCrate, currentRobotPosition, crates);
       hasCrate = result.hasCrate;
       crates = result.crates;
       continue;
     }
-    if (step === 'D') {
+    if (command === 'D') {
       const result = dropCrate(hasCrate, currentRobotPosition, crates);
       hasCrate = result.hasCrate;
       crates = result.crates;
@@ -29,9 +29,9 @@ export function execute(initialState: FactoryState, command: string): FactorySta
     if (hasCrate) {
       // biome-ignore lint/style/noNonNullAssertion: If robot already has crate, then we certainly have one at the same position.
       const crate = findCrateAtRobotPosition(currentRobotPosition, crates)!;
-      crate.position = moveRobot(crate.position, step);
+      crate.position = moveRobot(crate.position, command);
     }
-    currentRobotPosition = moveRobot(currentRobotPosition, step);
+    currentRobotPosition = moveRobot(currentRobotPosition, command);
   }
 
   return {
