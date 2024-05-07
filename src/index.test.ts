@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Coordinates, FactoryState } from './factory-state';
 import { execute } from './index';
-import { moveRobot } from './move';
+import { move } from './move';
 
 const consoleErrorSpy = vi.spyOn(console, 'error');
 
-const moveRobotMock = vi.mocked(moveRobot);
+const moveMock = vi.mocked(move);
 
 describe('Move Robot Tests', () => {
   beforeEach(() => {
@@ -195,7 +195,7 @@ describe('Move Robot Tests', () => {
         crates: [],
       };
       expect(newLocation).toEqual(expected);
-      expect(moveRobotMock).toBeCalledTimes(1);
+      expect(moveMock).toBeCalledTimes(1);
     });
   });
 });

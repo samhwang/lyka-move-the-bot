@@ -1,7 +1,7 @@
 import type { Command } from './commands';
 import { dropCrate, findCrateAtRobotPosition, grabCrate } from './crate-interact';
 import type { FactoryState } from './factory-state';
-import { MAX, moveRobot } from './move';
+import { MAX, move } from './move';
 
 function calculateFactoryState(previousState: FactoryState, command: Command): FactoryState {
   switch (command) {
@@ -32,7 +32,7 @@ function calculateFactoryState(previousState: FactoryState, command: Command): F
     case 'E':
     case 'W': {
       let newCrates = previousState.crates;
-      const position = moveRobot(previousState.robot.position, command);
+      const position = move(previousState.robot.position, command);
       if (previousState.robot.hasCrate) {
         // biome-ignore lint/style/noNonNullAssertion: If robot already has crate, then we certainly have one at the same position.
         const crate = findCrateAtRobotPosition(previousState.robot.position, previousState.crates)!;
