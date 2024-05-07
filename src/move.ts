@@ -7,12 +7,25 @@ export const MIN = 0;
 export const MAX = 9;
 
 const ROBOT_STEP: Record<Command, Coordinates> = {
+  // Crate
+  D: [0, 0],
+  G: [0, 0],
+
+  // Single direction
   N: [1, 0],
   S: [-1, 0],
   E: [0, 1],
   W: [0, -1],
-  D: [0, 0],
-  G: [0, 0],
+
+  // Compound direction
+  NE: [1, 1],
+  EN: [1, 1],
+  NW: [1, -1],
+  WN: [1, -1],
+  SE: [-1, 1],
+  ES: [-1, 1],
+  SW: [-1, -1],
+  WS: [-1, -1],
 };
 
 function isOutOfBounds([row, col]: Coordinates) {

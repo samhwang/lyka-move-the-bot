@@ -1,4 +1,4 @@
-import type { Command } from './commands';
+import { parseInstruction, type Command } from './commands';
 import { dropCrate, findCrateAtRobotPosition, grabCrate } from './crate-interact';
 import type { FactoryState } from './factory-state';
 import { MAX, move } from './move';
@@ -58,7 +58,7 @@ export function execute(initialState: FactoryState, instruction: string): Factor
     return initialState;
   }
 
-  const commands = instruction.split(' ') as Command[];
+  const commands = parseInstruction(instruction);
   let factoryState = initialState;
   for (const command of commands) {
     factoryState = calculateFactoryState(factoryState, command);
