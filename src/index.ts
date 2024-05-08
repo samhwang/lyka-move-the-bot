@@ -1,30 +1,16 @@
 import { type Command, parseInstruction } from './commands';
-import { dropCrate, findCrateAtRobotPosition, grabCrate } from './crate-interact';
+import { dropCrate, grabCrate } from './crate-interact';
 import type { FactoryState } from './factory-state';
 import { MAX, move } from './move';
 
-function calculateFactoryState(previousState: FactoryState, command: Command): FactoryState {
+function iterate(previousState: FactoryState, command: Command): FactoryState {
   switch (command) {
     case 'G': {
-      const grabResult = grabCrate(previousState.robot.hasCrate, previousState.robot.position, previousState.crates);
-      return {
-        robot: {
-          position: previousState.robot.position,
-          hasCrate: grabResult.hasCrate,
-        },
-        crates: grabResult.crates,
-      };
+      return grabCrate(previousState);
     }
 
     case 'D': {
-      const dropResult = dropCrate(previousState.robot.hasCrate, previousState.robot.position, previousState.crates);
-      return {
-        robot: {
-          position: previousState.robot.position,
-          hasCrate: dropResult.hasCrate,
-        },
-        crates: dropResult.crates,
-      };
+      return dropCrate(previousState);
     }
 
     case 'N':
@@ -42,9 +28,7 @@ function calculateFactoryState(previousState: FactoryState, command: Command): F
       let newCrates = previousState.crates;
       const position = move(previousState.robot.position, command);
       if (previousState.robot.hasCrate) {
-        // biome-ignore lint/style/noNonNullAssertion: If robot already has crate, then we certainly have one at the same position.
-        const crate = findCrateAtRobotPosition(previousState.robot.position, previousState.crates)!;
-        newCrates = newCrates.filter((c) => JSON.stringify(c.position) !== JSON.stringify(crate.position)).concat({ position });
+        newCrates = newCrates.filter((c) => JSON.stringify(c.position) !== JSON.stringify(previousState.robot.position)).concat({ position });
       }
       return {
         robot: {
@@ -69,7 +53,7 @@ export function execute(initialState: FactoryState, instruction: string): Factor
   const commands = parseInstruction(instruction);
   let factoryState = initialState;
   for (const command of commands) {
-    factoryState = calculateFactoryState(factoryState, command);
+    factoryState = iterate(factoryState, command);
   }
 
   return factoryState;

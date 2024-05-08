@@ -1,38 +1,55 @@
-import type { Coordinates, Crate } from './factory-state';
+import type { Coordinates, Crate, FactoryState } from './factory-state';
 
-export function findCrateAtRobotPosition(currentPosition: Coordinates, crates: Crate[]): Crate | undefined {
-  return crates.find((crate) => JSON.stringify(crate.position) === JSON.stringify(currentPosition));
+function isSameCoordinates(a: Coordinates, b: Coordinates): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
 }
 
-export function grabCrate(hasCrate: boolean, robotPosition: Coordinates, crates: Crate[]): { hasCrate: boolean; crates: Crate[] } {
-  if (hasCrate) {
+function findCrateAtPosition(currentPosition: Coordinates, crates: Crate[]): Crate | undefined {
+  return crates.find((crate) => isSameCoordinates(crate.position, currentPosition));
+}
+
+export function grabCrate(previousState: FactoryState): FactoryState {
+  if (previousState.robot.hasCrate) {
     console.error('ALREADY HAVE CRATE, CANNOT GRAB MORE.');
-    return { hasCrate, crates };
+    return previousState;
   }
 
-  const crate = findCrateAtRobotPosition(robotPosition, crates);
+  const crate = findCrateAtPosition(previousState.robot.position, previousState.crates);
   if (!crate) {
     console.error('NO CRATE TO GRAB.');
-    return { hasCrate, crates };
+    return previousState;
   }
-  return { hasCrate: true, crates };
+
+  return {
+    robot: {
+      hasCrate: true,
+      position: previousState.robot.position,
+    },
+    crates: previousState.crates,
+  };
 }
 
-function filterCrateAtRobotPosition(currentPosition: Coordinates, crates: Crate[]): Crate[] {
-  return crates.filter((crate) => JSON.stringify(crate.position) === JSON.stringify(currentPosition));
+function filterCrateAtPosition(currentPosition: Coordinates, crates: Crate[]): Crate[] {
+  return crates.filter((crate) => isSameCoordinates(crate.position, currentPosition));
 }
 
-export function dropCrate(hasCrate: boolean, robotPosition: Coordinates, crates: Crate[]): { hasCrate: boolean; crates: Crate[] } {
-  if (!hasCrate) {
+export function dropCrate(previousState: FactoryState): FactoryState {
+  if (!previousState.robot.hasCrate) {
     console.error('NO CRATE TO DROP.');
-    return { hasCrate, crates };
+    return previousState;
   }
 
-  const cratesAtPosition = filterCrateAtRobotPosition(robotPosition, crates);
+  const cratesAtPosition = filterCrateAtPosition(previousState.robot.position, previousState.crates);
   if (cratesAtPosition.length >= 2) {
     console.error('CANNOT DROP CRATE ON TOP OF ANOTHER CRATE.');
-    return { hasCrate, crates };
+    return previousState;
   }
 
-  return { hasCrate: false, crates };
+  return {
+    robot: {
+      hasCrate: false,
+      position: previousState.robot.position,
+    },
+    crates: previousState.crates,
+  };
 }
