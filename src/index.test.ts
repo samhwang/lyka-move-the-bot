@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Coordinates, FactoryState } from './factory-state';
-import { execute } from './index';
+import { drawGrid, execute } from './index';
 
 const consoleErrorSpy = vi.spyOn(console, 'error');
 
@@ -10,6 +10,19 @@ describe('Move Robot Tests', () => {
   });
 
   describe('Just the robot', () => {
+    it('Should skip invalid commands', () => {
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: false,
+        },
+        crates: [],
+      };
+      const newLocation = execute(original, 'X');
+      expect(newLocation).toEqual(original);
+      expect(consoleErrorSpy).toHaveBeenCalled();
+    });
+
     it('Should stay still if the command is empty', () => {
       const original: FactoryState = {
         robot: {
@@ -120,6 +133,25 @@ describe('Move Robot Tests', () => {
       expect(newLocation).toEqual(expected);
     });
 
+    it('should be able to drop crate on an empty space', () => {
+      const original: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: true,
+        },
+        crates: [{ position: [0, 0] }],
+      };
+      const newLocation = execute(original, 'D');
+      const expected: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: false,
+        },
+        crates: [{ position: [0, 0] }],
+      };
+      expect(newLocation).toEqual(expected);
+    });
+
     it('should not grab crate if it already has one', () => {
       const original: FactoryState = {
         robot: {
@@ -171,6 +203,30 @@ describe('Move Robot Tests', () => {
       };
       expect(newLocation).toEqual(expected);
       expect(consoleErrorSpy).toBeCalledWith('CANNOT DROP CRATE ON TOP OF ANOTHER CRATE.');
+    });
+  });
+
+  describe('Draw grid', () => {
+    it('should draw the grid correctly', () => {
+      const state: FactoryState = {
+        robot: {
+          position: [0, 0],
+          hasCrate: false,
+        },
+        crates: [{ position: [4, 4] }, { position: [9, 9] }],
+      };
+      const grid = drawGrid(state);
+      const expected = `.........C
+..........
+..........
+..........
+..........
+....C.....
+..........
+..........
+..........
+R.........`;
+      expect(grid).toEqual(expected);
     });
   });
 });
