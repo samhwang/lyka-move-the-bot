@@ -1,4 +1,4 @@
-import { parseInstruction, type Command } from './commands';
+import { type Command, parseInstruction } from './commands';
 import { dropCrate, findCrateAtRobotPosition, grabCrate } from './crate-interact';
 import type { FactoryState } from './factory-state';
 import { MAX, move } from './move';
@@ -30,7 +30,15 @@ function calculateFactoryState(previousState: FactoryState, command: Command): F
     case 'N':
     case 'S':
     case 'E':
-    case 'W': {
+    case 'W':
+    case 'NE':
+    case 'SE':
+    case 'NW':
+    case 'SW':
+    case 'EN':
+    case 'ES':
+    case 'WN':
+    case 'WS': {
       let newCrates = previousState.crates;
       const position = move(previousState.robot.position, command);
       if (previousState.robot.hasCrate) {
