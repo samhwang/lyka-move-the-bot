@@ -5,7 +5,7 @@ export default defineConfig({
     globals: true,
     coverage: {
       enabled: true,
-      exclude: ['bin']
+      exclude: ['bin'],
     },
     typecheck: {
       enabled: true,
