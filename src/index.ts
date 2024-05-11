@@ -1,50 +1,6 @@
-import { produce } from 'immer';
-import { type Command, parseInstruction } from './commands';
-import { isSameCoordinates } from './compare-coordinates';
-import { dropCrate, grabCrate } from './crate-interact';
-import type { FactoryState } from './factory-state';
-import { MAX, move } from './move';
-
-function iterate(previousState: FactoryState, command: Command): FactoryState {
-  switch (command) {
-    case 'G': {
-      return grabCrate(previousState);
-    }
-
-    case 'D': {
-      return dropCrate(previousState);
-    }
-
-    case 'N':
-    case 'S':
-    case 'E':
-    case 'W':
-    case 'NE':
-    case 'SE':
-    case 'NW':
-    case 'SW':
-    case 'EN':
-    case 'ES':
-    case 'WN':
-    case 'WS': {
-      return produce(previousState, (draft) => {
-        const position = move(draft.robot.position, command);
-        if (draft.robot.hasCrate) {
-          draft.crates = draft.crates.filter((c) => {
-            const a = !isSameCoordinates(c.position, draft.robot.position);
-            return a;
-          });
-          draft.crates.push({ position });
-        }
-        draft.robot.position = position;
-      });
-    }
-
-    default:
-      console.error('INVALID COMMAND');
-      return previousState;
-  }
-}
+import { parseInstruction } from './commands';
+import { type FactoryState, iterate } from './factory-state';
+import { MAX } from './move';
 
 export function execute(initialState: FactoryState, instruction: string): FactoryState {
   if (instruction.length === 0) {
