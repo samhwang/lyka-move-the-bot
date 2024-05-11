@@ -1,3 +1,4 @@
+import { produce } from 'immer';
 import { isSameCoordinates } from './compare-coordinates';
 import type { Coordinates, Crate, FactoryState } from './factory-state';
 
@@ -17,13 +18,9 @@ export function grabCrate(previousState: FactoryState): FactoryState {
     return previousState;
   }
 
-  return {
-    robot: {
-      hasCrate: true,
-      position: previousState.robot.position,
-    },
-    crates: previousState.crates,
-  };
+  return produce(previousState, (draft) => {
+    draft.robot.hasCrate = true;
+  });
 }
 
 export function dropCrate(previousState: FactoryState): FactoryState {
@@ -38,11 +35,7 @@ export function dropCrate(previousState: FactoryState): FactoryState {
     return previousState;
   }
 
-  return {
-    robot: {
-      hasCrate: false,
-      position: previousState.robot.position,
-    },
-    crates: previousState.crates,
-  };
+  return produce(previousState, (draft) => {
+    draft.robot.hasCrate = false;
+  });
 }

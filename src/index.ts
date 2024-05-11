@@ -1,3 +1,4 @@
+import { produce } from 'immer';
 import { type Command, parseInstruction } from './commands';
 import { isSameCoordinates } from './compare-coordinates';
 import { dropCrate, grabCrate } from './crate-interact';
@@ -26,18 +27,17 @@ function iterate(previousState: FactoryState, command: Command): FactoryState {
     case 'ES':
     case 'WN':
     case 'WS': {
-      let newCrates = previousState.crates;
-      const position = move(previousState.robot.position, command);
-      if (previousState.robot.hasCrate) {
-        newCrates = newCrates.filter((c) => !isSameCoordinates(c.position, previousState.robot.position)).concat({ position });
-      }
-      return {
-        robot: {
-          position,
-          hasCrate: previousState.robot.hasCrate,
-        },
-        crates: newCrates,
-      };
+      return produce(previousState, (draft) => {
+        const position = move(draft.robot.position, command);
+        if (draft.robot.hasCrate) {
+          draft.crates = draft.crates.filter((c) => {
+            const a = !isSameCoordinates(c.position, draft.robot.position);
+            return a;
+          });
+          draft.crates.push({ position });
+        }
+        draft.robot.position = position;
+      });
     }
 
     default:
