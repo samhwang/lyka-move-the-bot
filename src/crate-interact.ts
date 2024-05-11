@@ -1,11 +1,8 @@
+import { isSameCoordinates } from './compare-coordinates';
 import type { Coordinates, Crate, FactoryState } from './factory-state';
 
-function isSameCoordinates(a: Coordinates, b: Coordinates): boolean {
-  return JSON.stringify(a) === JSON.stringify(b);
-}
-
-function findCrateAtPosition(currentPosition: Coordinates, crates: Crate[]): Crate | undefined {
-  return crates.find((crate) => isSameCoordinates(crate.position, currentPosition));
+function filterCrateAtPosition(currentPosition: Coordinates, crates: Crate[]): Crate[] {
+  return crates.filter((crate) => isSameCoordinates(crate.position, currentPosition));
 }
 
 export function grabCrate(previousState: FactoryState): FactoryState {
@@ -14,8 +11,8 @@ export function grabCrate(previousState: FactoryState): FactoryState {
     return previousState;
   }
 
-  const crate = findCrateAtPosition(previousState.robot.position, previousState.crates);
-  if (!crate) {
+  const crate = filterCrateAtPosition(previousState.robot.position, previousState.crates);
+  if (crate.length === 0) {
     console.error('NO CRATE TO GRAB.');
     return previousState;
   }
@@ -27,10 +24,6 @@ export function grabCrate(previousState: FactoryState): FactoryState {
     },
     crates: previousState.crates,
   };
-}
-
-function filterCrateAtPosition(currentPosition: Coordinates, crates: Crate[]): Crate[] {
-  return crates.filter((crate) => isSameCoordinates(crate.position, currentPosition));
 }
 
 export function dropCrate(previousState: FactoryState): FactoryState {

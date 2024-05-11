@@ -1,4 +1,5 @@
 import { type Command, parseInstruction } from './commands';
+import { isSameCoordinates } from './compare-coordinates';
 import { dropCrate, grabCrate } from './crate-interact';
 import type { FactoryState } from './factory-state';
 import { MAX, move } from './move';
@@ -28,7 +29,7 @@ function iterate(previousState: FactoryState, command: Command): FactoryState {
       let newCrates = previousState.crates;
       const position = move(previousState.robot.position, command);
       if (previousState.robot.hasCrate) {
-        newCrates = newCrates.filter((c) => JSON.stringify(c.position) !== JSON.stringify(previousState.robot.position)).concat({ position });
+        newCrates = newCrates.filter((c) => !isSameCoordinates(c.position, previousState.robot.position)).concat({ position });
       }
       return {
         robot: {
